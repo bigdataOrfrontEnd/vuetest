@@ -51,16 +51,20 @@ const filterText = ref("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
 const del1 = ()=>{
+  console.log(treeRef.value!.getCheckedKeys(true)); //keys
+  const keys = treeRef.value!.getCheckedKeys(true);
+   const newkeys = keys.filter(item=> item !== 9)
+  const newkeysCopy = [...newkeys];
+  
+  console.log(newkeysCopy);
+  
+  treeRef.value.setCheckedKeys([],false)
   console.log(treeRef.value!.getCheckedKeys(false)); //keys
-  const keys = treeRef.value!.getCheckedKeys(false);
-  const newkeys = keys.filter(item=> item !== 5)
-  // 清空当前选中状态
-  treeRef.value.setCheckedKeys([], false);
-  console.log("New checked keys (excluding 5):", newkeys);
-    if(newkeys){
-    treeRef.value.setCheckedKeys([5], false);
-  }
-  console.log("Updated checked keys:", treeRef.value!.getCheckedKeys(false));
+
+   treeRef.value.setCheckedKeys(newkeysCopy, true);
+   console.log(treeRef.value!.getCheckedKeys(true)); //keys
+ 
+ 
 }
 const defaultProps = {
   children: "children",
