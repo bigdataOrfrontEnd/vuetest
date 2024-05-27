@@ -12,7 +12,7 @@
   <el-tree :key="treekey" ref="treeRef" show-checkbox style="max-width: 600px" class="filter-tree" :data="data"
     :props="defaultProps" node-key="id" :default-expanded-keys="expendKeys" :filter-node-method="filterNode"
     @check="checkChange" />
-
+  <Button @click="del1">删除</Button>
   <el-table :data="tableData" style="width: 100%">
     <el-table-column prop="date" label="Date" width="180" />
     <el-table-column prop="name" label="Name" width="180" />
@@ -26,9 +26,11 @@ import { ElTree } from "element-plus";
 const radio1 = ref("New York");
 const treekey = ref(new Date());
 const expendKeys = ref([]);
+const tableData =ref([]) 
 interface Tree {
   [key: string]: any;
 }
+
 const handchange = (value: any) => {
   
   if (value == "New York") {
@@ -48,6 +50,18 @@ const handchange = (value: any) => {
 const filterText = ref("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
+const del1 = ()=>{
+  console.log(treeRef.value!.getCheckedKeys(false)); //keys
+  const keys = treeRef.value!.getCheckedKeys(false);
+  const newkeys = keys.filter(item=> item !== 5)
+  // 清空当前选中状态
+  treeRef.value.setCheckedKeys([], false);
+  console.log("New checked keys (excluding 5):", newkeys);
+    if(newkeys){
+    treeRef.value.setCheckedKeys([5], false);
+  }
+  console.log("Updated checked keys:", treeRef.value!.getCheckedKeys(false));
+}
 const defaultProps = {
   children: "children",
   label: "label",
@@ -65,8 +79,8 @@ const filterNode = (value: string, data: Tree) => {
   if (!value) return true;
   return data.label.includes(value);
 };
+
 const checkChange = (data1, node) => {
-  console.log("data", data1);
   node.checkedNodes.forEach((item) => {
     if (item.level === 3) {
       data.map((item1) => {
@@ -75,10 +89,10 @@ const checkChange = (data1, node) => {
             if (item2.children && item2.children.length > 0) {
               item2.children.map((item3) => {
                 if (item3.label === item.label) {
-                  tableData.push({
-                    name1: item1.label,
-                    name2: item2.label,
-                    name3: item.label,
+                  tableData.value.push({
+                    date: item1.label,
+                    name: item2.label,
+                    address: item.label,
                   });
                 }
               });
@@ -91,7 +105,7 @@ const checkChange = (data1, node) => {
         if (item1.children && item1.pid === item.pid) {
           item1.children.map((item2) => {
             if (!item2.children || item2.children.length === 0) {
-              tableData.push({ name1: item1.label, name2: item2.label });
+              tableData.value.push({ date: item1.label, name: item2.label,address:item.label });
             }
           });
         }
@@ -100,17 +114,17 @@ const checkChange = (data1, node) => {
       data.map((item1) => {
         if (item1.pid === item.pid) {
           if (!item1.children || item1.children.length === 0) {
-            tableData.push({ name1: item.label });
+            tableData.value.push({ date: item1.label, name: item1.label,address:item.label  });
           }
         }
       });
     }
   });
-  console.log("tableData", tableData);
+  console.log("tableData", tableData.value);
 };
 const data: Tree[] = [
   {
-    id: "1",
+    id: 1,
     label: "Level one 1",
     level: "1",
     children: [
@@ -134,34 +148,34 @@ const data: Tree[] = [
     ],
   },
   {
-    id: "2",
+    id: 2,
     label: "Level one 2",
     level: "1",
     children: [
       {
-        id: "5",
+        id: 5,
         label: "Level two 2-1",
         level: "2",
       },
       {
-        id: "6",
+        id: 6,
         label: "Level two 2-2",
         level: "2",
       },
     ],
   },
   {
-    id: "3",
+    id: 3,
     label: "Level one 3",
     level: "1",
     children: [
       {
-        id: "7",
+        id: 7,
         label: "Level two 3-1",
         level: "2",
       },
       {
-        id: "8",
+        id: 8,
         label: "Level two 3-2",
         level: "2",
       },
@@ -195,26 +209,27 @@ const getSecondIds = (id) => {
   });
   return ids;
 };
-const tableData = [
-  {
-    date: "2016-05-03",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-02",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-04",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-  {
-    date: "2016-05-01",
-    name: "Tom",
-    address: "No. 189, Grove St, Los Angeles",
-  },
-];
+
+// [
+//   {
+//     date: "2016-05-03",
+//     name: "Tom",
+//     address: "No. 189, Grove St, Los Angeles",
+//   },
+//   {
+//     date: "2016-05-02",
+//     name: "Tom",
+//     address: "No. 189, Grove St, Los Angeles",
+//   },
+//   {
+//     date: "2016-05-04",
+//     name: "Tom",
+//     address: "No. 189, Grove St, Los Angeles",
+//   },
+//   {
+//     date: "2016-05-01",
+//     name: "Tom",
+//     address: "No. 189, Grove St, Los Angeles",
+//   },
+// ];
 </script>
