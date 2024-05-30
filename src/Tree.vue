@@ -7,11 +7,25 @@
       <el-radio-button label="Chicago" value="Chicago" />
     </el-radio-group>
   </div>
-  <el-input v-model="filterText" style="width: 240px" placeholder="Filter keyword" />
+  <el-input
+    v-model="filterText"
+    style="width: 240px"
+    placeholder="Filter keyword"
+  />
 
-  <el-tree :key="treekey" ref="treeRef" show-checkbox style="max-width: 600px" class="filter-tree" :data="data"
-    :props="defaultProps" node-key="id" :default-expanded-keys="expendKeys" :filter-node-method="filterNode"
-    @check="checkChange" />
+  <el-tree
+    :key="treekey"
+    ref="treeRef"
+    show-checkbox
+    style="max-width: 600px"
+    class="filter-tree"
+    :data="data"
+    :props="defaultProps"
+    node-key="id"
+    :default-expanded-keys="expendKeys"
+    :filter-node-method="filterNode"
+    @check="checkChange"
+  />
   <Button @click="del1">删除</Button>
   <el-table :data="tableData" style="width: 100%">
     <el-table-column prop="date" label="Date" width="180" />
@@ -26,13 +40,12 @@ import { ElTree } from "element-plus";
 const radio1 = ref("New York");
 const treekey = ref(new Date());
 const expendKeys = ref([]);
-const tableData =ref([]) 
+const tableData = ref([]);
 interface Tree {
   [key: string]: any;
 }
 
 const handchange = (value: any) => {
-  
   if (value == "New York") {
     treekey.value = new Date();
     expendKeys.value = getSecondIds("1");
@@ -45,27 +58,24 @@ const handchange = (value: any) => {
     expendKeys.value = getSecondIds("3");
   }
   console.log(expendKeys.value);
-  
 };
 const filterText = ref("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
-const del1 = ()=>{
+const del1 = () => {
   console.log(treeRef.value!.getCheckedKeys(true)); //keys
   const keys = treeRef.value!.getCheckedKeys(true);
-   const newkeys = keys.filter(item=> item !== 9)
+  const newkeys = keys.filter((item) => item !== 9);
   const newkeysCopy = [...newkeys];
-  
-  console.log(newkeysCopy);
-  
-  treeRef.value.setCheckedKeys([],false)
-  console.log(treeRef.value!.getCheckedKeys(false)); //keys
 
-   treeRef.value.setCheckedKeys(newkeysCopy, true);
-   console.log(treeRef.value!.getCheckedKeys(true)); //keys
- 
- 
-}
+  console.log(newkeysCopy);
+
+  treeRef.value.setCheckedKeys([], false);
+  // console.log(treeRef.value!.getCheckedKeys(false)); //keys
+
+  treeRef.value.setCheckedKeys(newkeysCopy, true);
+  //  console.log(treeRef.value!.getCheckedKeys(true)); //keys
+};
 const defaultProps = {
   children: "children",
   label: "label",
@@ -109,7 +119,11 @@ const checkChange = (data1, node) => {
         if (item1.children && item1.pid === item.pid) {
           item1.children.map((item2) => {
             if (!item2.children || item2.children.length === 0) {
-              tableData.value.push({ date: item1.label, name: item2.label,address:item.label });
+              tableData.value.push({
+                date: item1.label,
+                name: item2.label,
+                address: item.label,
+              });
             }
           });
         }
@@ -118,7 +132,11 @@ const checkChange = (data1, node) => {
       data.map((item1) => {
         if (item1.pid === item.pid) {
           if (!item1.children || item1.children.length === 0) {
-            tableData.value.push({ date: item1.label, name: item1.label,address:item.label  });
+            tableData.value.push({
+              date: item1.label,
+              name: item1.label,
+              address: item.label,
+            });
           }
         }
       });
@@ -190,25 +208,24 @@ const getSecondIds = (id) => {
   const ids = [];
   data.forEach((item) => {
     // item.children && item.children.length > 0 &&
-    if ( id === "2") {
+    if (id === "2") {
       ids.push(item.id);
       // item.children.forEach((item1) => {
       //   ids.push(item1.id);
       // });
-      // item.children && item.children.length > 0 && 
+      // item.children && item.children.length > 0 &&
     } else if (id === "3") {
       item.children.forEach((item1) => {
         item.children.forEach((item1) => {
-        ids.push(item1.id);
-      });
+          ids.push(item1.id);
+        });
         // if (item1.children && item1.children.length > 0) {
         //   item1.forEach((item2) => {
         //     ids.push(item2.ids);
         //   });
         // }
       });
-    }else if(id=="1"){
-        
+    } else if (id == "1") {
     }
   });
   return ids;
